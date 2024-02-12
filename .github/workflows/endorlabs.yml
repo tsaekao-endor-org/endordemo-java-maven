@@ -41,12 +41,14 @@ jobs:
           if: ${{ github.event_name == 'workflow_dispatch' }}
           uses: endorlabs/github-action@736c93ea52b002f2ac229aaeb273b102cbf6fe12
           with:
+            namespace: ${{ github.event.inputs.tenant_name }}
             scan_summary_output_type: "table"
             pr: "false"
             enable_github_action_token: "true"
             scan_dependencies: "true"
             scan_secrets: "true"
             scan_git_logs: "true"
+            additional_args: "--as-default-branch --api=${{ github.event.inputs.api }}"
         - name: Endor Labs Scan PR to Default Branch
           if: github.event_name == 'pull_request'
           uses: endorlabs/github-action@736c93ea52b002f2ac229aaeb273b102cbf6fe12
