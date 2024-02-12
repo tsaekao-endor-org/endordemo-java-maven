@@ -30,13 +30,24 @@ jobs:
             NAMESPACE=$(jq -r '.inputs.tenant_name' $GITHUB_EVENT_PATH)
             echo "::add-mask::$NAMESPACE" 
             echo NAMESPACE=$NAMESPACE >> $GITHUB_ENV
+
+        - name: Use Caches
+          uses: actions/cache@v1
+          with:
+            path: ~/.m2
+            key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+            restore-keys: |
+              ${{ runner.os }}-maven-
+        
         - name: Checkout Repository
           uses: actions/checkout@v3
+          
         - name: Setup Java
           uses: actions/setup-java@v3
           with:
             distribution: microsoft
             java-version: "17"
+            
         - name: Endor Labs Workflow Dispatch
           if: ${{ github.event_name == 'workflow_dispatch' }}
           uses: endorlabs/github-action@736c93ea52b002f2ac229aaeb273b102cbf6fe12
@@ -49,6 +60,7 @@ jobs:
             scan_secrets: "true"
             scan_git_logs: "true"
             additional_args: "--as-default-branch --api=${{ github.event.inputs.api }}"
+            
         - name: Endor Labs Scan PR to Default Branch
           if: github.event_name == 'pull_request'
           uses: endorlabs/github-action@736c93ea52b002f2ac229aaeb273b102cbf6fe12
@@ -60,6 +72,7 @@ jobs:
             enable_pr_comments: "true"
             scan_dependencies: "true"
             scan_secrets: "true"
+            
         - name: Endor Labs Watch
           if: ${{ github.event_name == 'push' }}
           uses: endorlabs/github-action@736c93ea52b002f2ac229aaeb273b102cbf6fe12
