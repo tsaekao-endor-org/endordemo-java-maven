@@ -1,0 +1,49 @@
+name: Endor Labs Scan
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+      inputs:
+        tenant_name:
+          description: "Enter your Endor Labs tenant name:"
+          required: true
+
+jobs:
+  scan:
+    permissions:
+      contents: read
+      id-token: write
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+    - name: setup namespace 
+      run: | 
+        NAMESPACE=$(jq -r '.inputs.tenant_name' $GITHUB_EVENT_PATH)
+        echo "::add-mask::$NAMESPACE" 
+        echo NAMESPACE=$NAMESPACE >> $GITHUB_ENV
+    
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'microsoft'
+        java-version: '17'
+        cache: 'maven'
+    
+    - name: Compile Package
+      run: mvn clean install
+    
+    - name: Run endorctl
+      uses: endorlabs/github-action@v1.1.2
+      with:
+        namespace: ${{ github.event.inputs.tenant_name }}
+        enable_github_action_token: true
+        scan_summary_output_type: "table"
+        additional_args: "--as-default-branch"
+        pr: false
