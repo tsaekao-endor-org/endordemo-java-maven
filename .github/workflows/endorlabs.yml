@@ -9,6 +9,10 @@ on:
         tenant_name:
           description: "Enter your Endor Labs tenant name:"
           required: true
+        api:
+          description: "Endor Labs API"
+          required: true
+          default: "https://api.endorlabs.com"
 
 jobs:
   scan:
@@ -45,5 +49,5 @@ jobs:
         namespace: ${{ github.event.inputs.tenant_name }}
         enable_github_action_token: true
         scan_summary_output_type: "table"
-        additional_args: "--as-default-branch"
+        additional_args: "--as-default-branch --api=${{ github.event.inputs.api}}"
         pr: false
