@@ -5,14 +5,20 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-      inputs:
-        tenant_name:
-          description: "Enter your Endor Labs tenant name:"
-          required: true
-        api:
-          description: "Endor Labs API"
-          required: true
-          default: "https://api.endorlabs.com"
+    inputs:
+      api:
+        description: "Enter the API for Endor Labs"
+        required: true
+        type: choice
+        default: https://api.endorlabs.com
+        options:
+        - https://api.staging.endorlabs.com
+        - https://api.endorlabs.com
+      tenant_name:
+        description: Give?"
+        required: true
+        type: string
+        default: "demo"
 
 jobs:
   scan:
@@ -51,3 +57,66 @@ jobs:
         scan_summary_output_type: "table"
         additional_args: "--as-default-branch --api=${{ github.event.inputs.api}}"
         pr: false
+
+name: Endor Labs Scan
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      tenant_name:
+        description: "Enter your tenant name:"
+        required: true
+        type: string
+jobs:
+  scan-repo:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+        - name: Setup namespace Environment Variables
+          run: | 
+            NAMESPACE=$(jq -r '.inputs.tenant_name' $GITHUB_EVENT_PATH)
+            echo "::add-mask::$NAMESPACE" 
+            echo ENDOR_NAMESPACE=$NAMESPACE >> $GITHUB_ENV
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: microsoft
+          java-version: "17"
+      - name: Endor Labs Workflow Dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: endorlabs/github-action@736c93ea52b002f2ac229aaeb273b102cbf6fe12
+        with:
+          scan_summary_output_type: "table"
+          pr: "false"
+          enable_github_action_token: "true"
+          scan_dependencies: "true"
+          scan_secrets: "true"
+          scan_git_logs: "true"
+      - name: Endor Labs Scan PR to Default Branch
+        if: github.event_name == 'pull_request'
+        uses: endorlabs/github-action@736c93ea52b002f2ac229aaeb273b102cbf6fe12
+        with:
+          namespace: "example" # Update with your Endor Labs namespace to perform pull request scanning.
+          scan_summary_output_type: "table"
+          pr: "true"
+          enable_github_action_token: "true"
+          enable_pr_comments: "true"
+          scan_dependencies: "true"
+          scan_secrets: "true"
+      - name: Endor Labs Watch
+        if: ${{ github.event_name == 'push' }}
+        uses: endorlabs/github-action@736c93ea52b002f2ac229aaeb273b102cbf6fe12
+        with:
+          namespace: "example" # Update with your Endor Labs namespace to scan changes.
+          scan_summary_output_type: "table"
+          pr: "false"
+          enable_github_action_token: "true"
+          scan_dependencies: "true"
+          scan_secrets: "true"
