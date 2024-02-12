@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       api:
-        description: "Enter the API for Endor Labs"
+        description: "Enter the target Endor Labs API"
         required: true
         type: choice
         default: https://api.endorlabs.com
