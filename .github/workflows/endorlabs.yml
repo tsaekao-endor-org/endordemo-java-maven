@@ -15,10 +15,9 @@ on:
         - https://api.staging.endorlabs.com
         - https://api.endorlabs.com
       tenant_name:
-        description: Give?"
+        description: "Enter your Endor Labs namespace?"
         required: true
         type: string
-        default: "demo"
 jobs:
   scan-repo:
     runs-on: ubuntu-latest
