@@ -29,7 +29,7 @@ jobs:
           run: | 
             NAMESPACE=$(jq -r '.inputs.tenant_name' $GITHUB_EVENT_PATH)
             echo "::add-mask::$NAMESPACE" 
-            echo ENDOR_NAMESPACE=$NAMESPACE >> $GITHUB_ENV
+            echo NAMESPACE=$NAMESPACE >> $GITHUB_ENV
         - name: Checkout Repository
           uses: actions/checkout@v3
         - name: Setup Java
