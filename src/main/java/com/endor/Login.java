@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/clothing-shop/login")
 public class Login extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static final String token = "AKIAABCDEFGHIJKLMNOP";
 
     public Login() {
         super();
@@ -26,6 +27,7 @@ public class Login extends HttpServlet {
         PrintWriter out = null;
         try {
             out = response.getWriter();
+            forceSastIssue();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,6 +92,37 @@ public class Login extends HttpServlet {
         HtmlUtil.closeTable(response);
         out.println("</body>");
         out.println("</html>");
+    }
+
+    /**
+     * 
+     * SAST should Flag This
+     * The code checks for .. first (the “validation”), but only afterward does it remove instances of .. in the string.
+     * 
+     * An attacker might craft input that passes the initial “contains ..” check, but which becomes dangerous once partially stripped or concatenated.
+     * 
+     * Proper approach: perform all string modifications first, then do your validation on the final “sanitized” input.
+     * This snippet should trigger any rule/policy that looks for “string modification after validation,” or “validate-then-modify,” in Java code.
+     */
+    private void forceSastIssue() {
+        // For demonstration, we hard-code an example input
+        // In real scenarios, this might come from user input, e.g., args[0] or HTTP request parameter
+        String input = "test../....//dir";
+
+        // 1) Validate via regex: if we find "..", we throw
+        Pattern pattern = Pattern.compile("\\.\\.");
+        Matcher match = pattern.matcher(input);
+        if (match.find()) {
+            throw new Exception("Detected '..' in input!");
+        }
+
+        // 2) After validation, we then modify the string
+        // This is the red flag: we should have done all modifications
+        // BEFORE the final validation step
+        input = input.replaceAll("\\.\\.", "");
+
+        // Using the input after modification
+        System.out.println("Safe path: " + input);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
