@@ -20,7 +20,9 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: 'microsoft'
-        java-version: '17'
+        java-version: '8'
+        cache: maven
+        cache-dependency-path: pom.xml
     - name: Build Package
       run: mvn clean install
     - name: Endor Labs Scan Pull Request
