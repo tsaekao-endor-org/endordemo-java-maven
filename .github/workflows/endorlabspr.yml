@@ -37,7 +37,7 @@ jobs:
       uses: endorlabs/github-action@v1
       with:
         namespace: 'leonardo-learn'
-        enable_github_action_token: false
+        enable_github_action_token: true
         scan_dependencies: true
         scan_secrets: true
         pr: true
