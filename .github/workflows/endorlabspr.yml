@@ -36,6 +36,7 @@ jobs:
         scan_dependencies: true
         scan_secrets: true
         pr: true
+        scan_sast: true
         enable_pr_comments: true # Required to automatically comment on PRs for new policy violations
         github_token: ${{ secrets.GITHUB_TOKEN }} # Required for PR comments on new policy violations
 
