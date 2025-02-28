@@ -19,8 +19,8 @@ jobs:
     - name: Setup Java
       uses: actions/setup-java@v3
       with:
-        distribution: 'corretto'
-        java-version: '8'
+        distribution: 'microsoft'
+        java-version: '17'
         cache: maven
         cache-dependency-path: pom.xml
     - name: Build Package
