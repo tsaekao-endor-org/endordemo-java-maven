@@ -30,7 +30,6 @@ jobs:
         distribution: 'microsoft'
         java-version: '17'
         cache: maven
-        cache-dependency-path: pom.xml
     - name: Build Package
       run: mvn clean install
     - name: Endor Labs Scan Pull Request
