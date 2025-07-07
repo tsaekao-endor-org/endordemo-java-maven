@@ -63,6 +63,7 @@ public class Login extends HttpServlet {
 
         // VULNERABILITY: SQL Injection - concatenating user input directly into SQL
         // Additional comment: This is a very bad practice and should be avoided.
+        // This one to bmp
         try {
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             Statement stmt = conn.createStatement();
