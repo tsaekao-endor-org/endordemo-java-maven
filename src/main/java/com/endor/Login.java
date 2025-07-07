@@ -3,6 +3,10 @@ package com.endor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +19,14 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/clothing-shop/login")
 public class Login extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    
+    // VULNERABILITY: Hardcoded database credentials
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/testdb";
+    private static final String DB_USER = "admin";
+    private static final String DB_PASSWORD = "admin123";
+    
+    // VULNERABILITY: Hardcoded encryption key
+    private static final String ENCRYPTION_KEY = "mysecretkey123456789";
 
     public Login() {
         super();
@@ -49,6 +61,25 @@ public class Login extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
+        // VULNERABILITY: SQL Injection - concatenating user input directly into SQL
+        try {
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'";
+            ResultSet rs = stmt.executeQuery(sql);
+            
+            if(rs.next()) {
+                // VULNERABILITY: XSS - directly outputting user input without sanitization
+                out.println("<font color=green>Welcome " + username + "!</font>");
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (Exception e) {
+            // VULNERABILITY: Information disclosure - exposing stack trace
+            e.printStackTrace();
+        }
+
         HashMap<String, String> hash_map = new HashMap<>();
         hash_map.put("app-admin1", "password");
         hash_map.put("app-admin2", "password");
@@ -72,6 +103,7 @@ public class Login extends HttpServlet {
             Cookie loginCookie = new Cookie("username",username);
             // setting cookie to expiry in 30 mins
             loginCookie.setMaxAge(30*60);
+            // VULNERABILITY: Missing secure and httpOnly flags on cookies
             response.addCookie(loginCookie);
             out.println("<font color=red> User Name or Password are Correct...Redirecting...</font>");
 
