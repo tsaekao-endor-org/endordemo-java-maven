@@ -14,6 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginSuccess extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Adding a comment
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = null;
 		try {
