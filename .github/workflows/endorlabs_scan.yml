@@ -1,5 +1,6 @@
 name: Endor Labs Dependency and Secrets Scan
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
