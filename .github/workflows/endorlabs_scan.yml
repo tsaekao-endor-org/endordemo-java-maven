@@ -57,7 +57,7 @@ jobs:
       if: ${{ github.event_name == 'push' }}
       uses: endorlabs/github-action@v1 # Replace v1 with the commit SHA of the latest version of the GitHub Action for enhanced security
       with:
-        namespace: 'example' # Replace with your Endor Labs tenant namespace
+        namespace: 'endor-solutions-tsaekao' # Replace with your Endor Labs tenant namespace
         scan_dependencies: true
         scan_secrets: true
         pr: false
