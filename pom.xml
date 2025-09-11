@@ -138,17 +138,24 @@
 				</exclusion>
 			</exclusions>
       	  </dependency>
+
+		  <!-- INTENTIONALLY ADDED FOR TESTING NET-NEW FINDINGS IN PR COMMENTS -->
+		  <dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+		  </dependency>
+		  <!-- /INTENTIONALLY ADDED -->
 	</dependencies>
 
 	<build>
 		<finalName>endor-java-webapp-demo</finalName>
-		<pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+		<pluginManagement>
 			<plugins>
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>3.1.0</version>
 				</plugin>
-				<!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
 				<plugin>
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>3.0.2</version>
